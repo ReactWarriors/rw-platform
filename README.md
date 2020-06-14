@@ -47,6 +47,10 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Local development
+
+Before starting copy configs from `local_config` directory to root and setup variables.
+
 ## Test
 
 ```bash
