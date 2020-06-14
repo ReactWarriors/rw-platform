@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Render, UseGuards } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { UserDto } from './user.dto';
@@ -15,8 +15,9 @@ export class UsersController {
   }
 
   @Get('/register')
+  @Render('index')
   registerPage() {
-    return 'Register page';
+    return { title: 'register', message: 'Register page' };
   }
 
   @Post('/register')
@@ -30,7 +31,8 @@ export class UsersController {
   }
 
   @Get('/login')
+  @Render('index')
   renderLoginPage() {
-    return 'Login page'
+    return { title: 'login', message: 'Login page' };
   }
 }
