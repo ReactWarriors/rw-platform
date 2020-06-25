@@ -29,10 +29,4 @@ export class UsersController {
   login(@Body() data: UserDto) {
     return this.usersService.login(data);
   }
-
-  @Get('/login')
-  @Render('index')
-  renderLoginPage() {
-    return { title: 'login', message: 'Login page' };
-  }
 }

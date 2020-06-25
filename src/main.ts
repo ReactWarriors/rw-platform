@@ -9,8 +9,8 @@ import * as sassMiddleware from 'node-sass-middleware';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
-  app.setViewEngine('hbs');
-  hbs.registerPartials(join(__dirname, '..', 'views/partials'));
+  app.setViewEngine('pug');
+  hbs.registerPartials(join(__dirname, '..', 'views'));
   app.use(
     sassMiddleware({
       src: join(__dirname, '..', 'src'), //where the styles files are
@@ -24,7 +24,7 @@ async function bootstrap() {
     }),
   );
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  await app.listen(3000);
+  await app.listen(4000);
 }
 
 bootstrap();
