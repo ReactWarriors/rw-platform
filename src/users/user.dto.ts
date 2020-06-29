@@ -13,4 +13,6 @@ export class UserRO {
   username: string;
   created: Date;
   token?: string;
+  projects?: Array<any>;
+  projectsApiKeys?: Array<any>;
 }

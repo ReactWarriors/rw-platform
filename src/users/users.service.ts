@@ -12,8 +12,9 @@ export class UsersService {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  findAll(): Promise<UserEntity[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<UserRO[]> {
+    const users = await this.usersRepository.find();
+    return users.map(item => item.toResponseObject());
   }
 
   async login(data: UserDto): Promise<UserRO> {
