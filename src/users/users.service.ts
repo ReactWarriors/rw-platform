@@ -13,7 +13,9 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<UserRO[]> {
-    const users = await this.usersRepository.find();
+    const users = await this.usersRepository.find({
+      relations: ['projectsApiKeys'],
+    });
     return users.map(item => item.toResponseObject());
   }
 

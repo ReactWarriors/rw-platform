@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { nanoid } from 'nanoid';
@@ -31,16 +31,28 @@ export class ProjectsService {
 
   async createProjectUserApiKey(data: ProjectAccessDto): Promise<any> {
     const { userId, projectId } = data;
+
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
-    console.log('user ->', user);
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
 
-    console.log('project ->', project);
+    const projectApiKey = await this.projectApiKeyRepository.findOne({
+      where: {
+        project,
+        user,
+      },
+    });
+
+    if (projectApiKey) {
+      throw new HttpException(
+        'User already get api key',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const projectApiKeyObj = await this.projectApiKeyRepository.create({
       project,
@@ -49,7 +61,6 @@ export class ProjectsService {
       isAccessGiven: true,
     });
 
-    console.log('projectApiKeyObj ->', projectApiKeyObj);
     await this.projectApiKeyRepository.save(projectApiKeyObj);
     return projectApiKeyObj;
   }

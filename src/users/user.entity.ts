@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,7 +11,6 @@ import {
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
-import { ProjectEntity } from '../projects/project.entity';
 import { ProjectApiKeyEntity } from '../projects/project_api_key.entity';
 
 @Entity('users')
@@ -40,17 +38,6 @@ export class UserEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  @ManyToMany(
-    () => ProjectEntity,
-    type => {
-      if (Array.isArray(type.apiKeys) && type.apiKeys.length) {
-        return type.apiKeys.map(apiKey => apiKey.user);
-      }
-    },
-  )
-  @JoinTable()
-  projects: ProjectEntity[];
-
   @OneToMany(
     () => ProjectApiKeyEntity,
     type => type.user,
@@ -59,13 +46,18 @@ export class UserEntity {
   projectsApiKeys: ProjectApiKeyEntity[];
 
   toResponseObject(showToken = true): UserRO {
-    const { id, created, username, projects, token, projectsApiKeys } = this;
-    const responseObject: UserRO = { id, created, username, projects, projectsApiKeys };
+    const { id, created, username, token, projectsApiKeys } = this;
+
+    console.log('projectsApiKeys ->', projectsApiKeys)
+    const responseObject: UserRO = {
+      id,
+      created,
+      username,
+      projectsApiKeys,
+    };
     if (showToken) {
       responseObject.token = token;
     }
-
-    console.log('projectsApiKeys ->', projectsApiKeys)
     return responseObject;
   }
 
