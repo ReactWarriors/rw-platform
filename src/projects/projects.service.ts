@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Global, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { nanoid } from 'nanoid';
 
 import { ProjectEntity } from './project.entity';
@@ -8,6 +8,7 @@ import { ProjectApiKeyEntity } from './project_api_key.entity';
 import { ProjectAccessDto, ProjectDto, ProjectRO } from './project.dto';
 import { UserEntity } from '../users/user.entity';
 
+@Global()
 @Injectable()
 export class ProjectsService {
   constructor(
@@ -27,6 +28,17 @@ export class ProjectsService {
     const project = await this.projectRepository.create(data);
     await this.projectRepository.save(project);
     return project.toResponseObject();
+  }
+
+  async validateProjectApiKey(apiKey): Promise<any> {
+    const userProject = await this.projectApiKeyRepository.findOne({
+      relations: ['project', 'user'],
+      where: {
+        apiKey: apiKey,
+      },
+    });
+    console.log('userProject ->', userProject)
+    return userProject
   }
 
   async createProjectUserApiKey(data: ProjectAccessDto): Promise<any> {

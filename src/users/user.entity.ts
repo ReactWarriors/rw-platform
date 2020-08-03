@@ -48,7 +48,6 @@ export class UserEntity {
   toResponseObject(showToken = true): UserRO {
     const { id, created, username, token, projectsApiKeys } = this;
 
-    console.log('projectsApiKeys ->', projectsApiKeys)
     const responseObject: UserRO = {
       id,
       created,
