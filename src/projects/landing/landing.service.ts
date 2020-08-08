@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ClientProxyFactory, Transport, ClientProxy } from '@nestjs/microservices';
+import {
+  ClientProxyFactory,
+  Transport,
+  ClientProxy,
+} from '@nestjs/microservices';
+import { LandingDTO, LandingRO } from './landing.dto';
 
 @Injectable()
 export class LandingService {
@@ -15,8 +20,11 @@ export class LandingService {
     });
   }
 
-  public createLanding(data: number[]) {
-    return this.client.send<number, number[]>('create_landing', data);
+  createLanding(data: LandingDTO, userId: string): any {
+    return this.client.send('create_landing', { data, userId });
   }
 
+  getAllUserLandings(userId){
+    return this.client.send('get_all_user_landings', userId)
+  }
 }

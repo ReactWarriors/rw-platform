@@ -1,8 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
 
+export type availableProjects = 'landing' | 'game';
+
 export class ProjectDto {
   @IsNotEmpty()
-  name: string;
+  name: availableProjects;
 }
 
 export class ProjectAccessDto {

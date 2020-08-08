@@ -1,11 +1,16 @@
 import { Global, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { nanoid } from 'nanoid';
 
 import { ProjectEntity } from './project.entity';
 import { ProjectApiKeyEntity } from './project_api_key.entity';
-import { ProjectAccessDto, ProjectDto, ProjectRO } from './project.dto';
+import {
+  availableProjects,
+  ProjectAccessDto,
+  ProjectDto,
+  ProjectRO,
+} from './project.dto';
 import { UserEntity } from '../users/user.entity';
 
 @Global()
@@ -30,15 +35,29 @@ export class ProjectsService {
     return project.toResponseObject();
   }
 
-  async validateProjectApiKey(apiKey): Promise<any> {
+  async isValidateProjectApiKey(
+    apiKey,
+    project: availableProjects,
+  ): Promise<any> {
     const userProject = await this.projectApiKeyRepository.findOne({
       relations: ['project', 'user'],
       where: {
         apiKey: apiKey,
       },
     });
-    console.log('userProject ->', userProject)
-    return userProject
+    return userProject?.project?.name === project;
+  }
+
+  async getUserByProjectApiKey(
+    apiKey,
+  ): Promise<any> {
+    const userProject = await this.projectApiKeyRepository.findOne({
+      relations: ['project', 'user'],
+      where: {
+        apiKey: apiKey,
+      },
+    });
+    return userProject?.user
   }
 
   async createProjectUserApiKey(data: ProjectAccessDto): Promise<any> {
