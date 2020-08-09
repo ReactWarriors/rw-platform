@@ -4,7 +4,7 @@ import {
   Transport,
   ClientProxy,
 } from '@nestjs/microservices';
-import { LandingDTO, LandingRO } from './landing.dto';
+import { LandingDTO } from './landing.dto';
 
 @Injectable()
 export class LandingService {
@@ -24,7 +24,32 @@ export class LandingService {
     return this.client.send('create_landing', { data, userId });
   }
 
-  getAllUserLandings(userId){
-    return this.client.send('get_all_user_landings', userId)
+  getAllUserLandings(userId) {
+    return this.client.send('get_all_user_landings', userId);
+  }
+
+  getLanding(landingId, userId) {
+    return this.client.send('get_landing', {
+      landingId,
+      userId,
+      role: 'student',
+    });
+  }
+
+  updateLanding(landingId, userId, data) {
+    return this.client.send('update_landing', {
+      landingId,
+      userId,
+      data,
+      role: 'student',
+    });
+  }
+
+  deleteLanding(landingId, userId) {
+    return this.client.send('delete_landing', {
+      landingId,
+      userId,
+      role: 'student',
+    });
   }
 }
