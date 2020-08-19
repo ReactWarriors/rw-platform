@@ -48,16 +48,61 @@ export class ProjectsService {
     return userProject?.project?.name === project;
   }
 
-  async getUserByProjectApiKey(
+  static getRoleByApiKey(apiKey) {
+    return process.env.ADMIN_API_KEY === apiKey ? 'admin' : 'student';
+  }
+
+  async getUserProject(
     apiKey,
+    project: availableProjects,
+    { userId, userProjectId },
   ): Promise<any> {
+
+    console.log('getUserProject -->')
+    if (!apiKey) throw new Error('Need to provide apiKey');
+
+    let userProject = null;
+    const role = ProjectsService.getRoleByApiKey(apiKey);
+
+    if (role === 'student') {
+      userProject = await this.projectApiKeyRepository.findOne({
+        relations: ['project', 'user'],
+        where: {
+          name: project,
+          apiKey: apiKey,
+        },
+      });
+
+      if (!userProject) throw new Error('Invalid apiKey');
+    } else {
+      userProject = await this.projectApiKeyRepository.findOne({
+        relations: ['project', 'user'],
+        where: {
+          name: project,
+          userId,
+          id: userProjectId,
+        },
+      });
+      if (!userProject)
+        throw new Error(
+          `Admin access: No such userProject; Invalid userId: ${userId};  or projectUserID: ${userProjectId};`,
+        );
+    }
+
+    console.log('userProject ->', userProject)
+    console.log('role ->', role)
+
+    return { userProject, role };
+  }
+
+  async getUserByProjectApiKey(apiKey): Promise<any> {
     const userProject = await this.projectApiKeyRepository.findOne({
       relations: ['project', 'user'],
       where: {
         apiKey: apiKey,
       },
     });
-    return userProject?.user
+    return userProject?.user;
   }
 
   async createProjectUserApiKey(data: ProjectAccessDto): Promise<any> {

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { ProjectAccessDto, ProjectDto } from './project.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('api/projects')
 export class ProjectsController {
