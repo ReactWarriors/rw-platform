@@ -20,4 +20,11 @@ export class ProjectsController {
   async createProjectUserApiKey(@Body() data: ProjectAccessDto) {
     return this.projectsServices.createProjectUserApiKey(data);
   }
+
+  @MessagePattern('check_project_access')
+  async getUserProject({ apiKey, project, projectUserId }) {
+    return this.projectsServices.getUserProject(apiKey, project, {
+      projectUserId,
+    });
+  }
 }

@@ -5,53 +5,46 @@ import { AppModule } from './app.module';
 import { join } from 'path';
 import * as hbs from 'hbs';
 import * as sassMiddleware from 'node-sass-middleware';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
 
 const PORT = 4000;
-const MICROSERVICE_PORT = 8877;
+
+const MICROSERVICE_OPTIONS = {
+  host: '127.0.0.1',
+  port: 8877,
+};
+
+const logger = new Logger();
 
 async function bootstrap() {
-  // const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // app.setBaseViewsDir(join(__dirname, '..', 'views'));
-  // app.setViewEngine('pug');
-  // hbs.registerPartials(join(__dirname, '..', 'views'));
-  // app.use(
-  //   sassMiddleware({
-  //     src: join(__dirname, '..', 'src'), //where the styles files are
-  //     dest: join(__dirname, '..', 'public'), //where styles should go
-  //     prefix: '',
-  //     sourceMap: true,
-  //     outputStyle: 'compressed',
-  //     indentedSyntax: false,
-  //     force: true,
-  //     debug: true, // obvious
-  //   }),
-  // );
-  // app.useStaticAssets(join(__dirname, '..', 'public'));
-
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        host: '127.0.0.1',
-        port: MICROSERVICE_PORT,
-      },
-    },
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setViewEngine('pug');
+  hbs.registerPartials(join(__dirname, '..', 'views'));
+  app.use(
+    sassMiddleware({
+      src: join(__dirname, '..', 'src'), //where the styles files are
+      dest: join(__dirname, '..', 'public'), //where styles should go
+      prefix: '',
+      sourceMap: true,
+      outputStyle: 'compressed',
+      indentedSyntax: false,
+      force: true,
+      debug: true, // obvious
+    }),
   );
-  app.listen(() => console.log('Microservice is listening'));
+  app.useStaticAssets(join(__dirname, '..', 'public'));
 
-  // const microservice = app.connectMicroservice({
-  //   transport: Transport.TCP,
-  //   port: MICROSERVICE_PORT,
-  // });
-  //
-  // microservice.listen(() =>
-  //   console.log(`Microservice is listening port ${MICROSERVICE_PORT} ...`),
-  // );
-  // await app.listen(PORT, () => {
-  //   console.log(`rw-platform is running on port ${PORT}`);
-  // });
+  const microservice = app.connectMicroservice({
+    transport: Transport.TCP,
+    options: MICROSERVICE_OPTIONS,
+  });
+
+  microservice.listen(() => logger.log('All microservices are listening...'));
+  await app.listen(PORT, () => {
+    logger.log(`Platform is running on port ${PORT}`);
+  });
 }
 
 bootstrap();

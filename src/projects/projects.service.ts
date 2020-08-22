@@ -55,10 +55,8 @@ export class ProjectsService {
   async getUserProject(
     apiKey,
     project: availableProjects,
-    { userId, userProjectId },
+    { projectUserId },
   ): Promise<any> {
-
-    console.log('getUserProject -->')
     if (!apiKey) throw new Error('Need to provide apiKey');
 
     let userProject = null;
@@ -68,29 +66,25 @@ export class ProjectsService {
       userProject = await this.projectApiKeyRepository.findOne({
         relations: ['project', 'user'],
         where: {
-          name: project,
-          apiKey: apiKey,
+          apiKey,
         },
       });
-
-      if (!userProject) throw new Error('Invalid apiKey');
+      if (!userProject)
+        return new HttpException(`Invalid apiKey`, HttpStatus.FORBIDDEN);
     } else {
       userProject = await this.projectApiKeyRepository.findOne({
         relations: ['project', 'user'],
         where: {
-          name: project,
-          userId,
-          id: userProjectId,
+          id: projectUserId,
         },
       });
+
       if (!userProject)
-        throw new Error(
-          `Admin access: No such userProject; Invalid userId: ${userId};  or projectUserID: ${userProjectId};`,
+        return new HttpException(
+          `Admin access: No such projectUserID: ${projectUserId};`,
+          HttpStatus.FORBIDDEN,
         );
     }
-
-    console.log('userProject ->', userProject)
-    console.log('role ->', role)
 
     return { userProject, role };
   }
