@@ -40,14 +40,9 @@ async function bootstrap() {
 
   const microservice = app.connectMicroservice({
     transport: Transport.TCP,
-    options: MICROSERVICE_OPTIONS,
   });
 
-  microservice.listen(() =>
-    logger.log(
-      `Microservice is listening port: ${MICROSERVICE_OPTIONS.port}; host: ${MICROSERVICE_OPTIONS.host};`,
-    ),
-  );
+  microservice.listen(() => logger.log('Microservice is listening... '));
   await app.listen(PORT, () => {
     logger.log(`Platform is running on port ${PORT}`);
   });
