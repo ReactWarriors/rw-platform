@@ -8,7 +8,7 @@ import * as sassMiddleware from 'node-sass-middleware';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const MICROSERVICE_OPTIONS = {
   host: '127.0.0.1',
