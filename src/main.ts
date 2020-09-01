@@ -8,14 +8,6 @@ import * as sassMiddleware from 'node-sass-middleware';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
-const PORT = process.env.PORT || 4000;
-const MICROSERVICE_PORT = process.env.MICROSERVICE_PORT || 8877;
-const HOST = process.env.HOST || '127.0.0.1';
-
-const MICROSERVICE_OPTIONS = {
-  host: HOST,
-  port: MICROSERVICE_PORT,
-};
 
 const logger = new Logger();
 
@@ -38,13 +30,22 @@ async function bootstrap() {
   );
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
-  const microservice = app.connectMicroservice({
-    transport: Transport.TCP,
-  });
+  const microservice = app.connectMicroservice(
+    {
+      transport: Transport.RMQ,
+      options: {
+        urls: [process.env.CLOUDAMQP_URL],
+        queue: 'project_acces',
+        queueOptions: {
+          durable: false
+        },
+      }
+    },
+  );
 
   microservice.listen(() => logger.log('Microservice is listening... '));
-  await app.listen(PORT, () => {
-    logger.log(`Platform is running on port ${PORT}`);
+  await app.listen(process.env.PORT, () => {
+    logger.log(`Platform is running on port ${process.env.PORT}`);
   });
 }
 
