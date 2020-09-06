@@ -1,5 +1,3 @@
-// todo: create guard to check if apiKey exist
-
 import {
   CanActivate,
   ExecutionContext,

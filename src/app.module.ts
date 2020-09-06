@@ -9,6 +9,7 @@ import { ProjectApiKeyEntity } from './projects/project_api_key.entity';
 import { ProjectsService } from './projects/projects.service';
 import { ProjectEntity } from './projects/project.entity';
 import { UserEntity } from './users/user.entity';
+import { ProjectAccessModule } from './project-access/project-access.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserEntity } from './users/user.entity';
     TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectApiKeyEntity]),
     UsersModule,
     ProjectsModule,
+    ProjectAccessModule,
   ],
   controllers: [AppController],
   providers: [AppService, ProjectsService],

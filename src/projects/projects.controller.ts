@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { ProjectAccessDto, ProjectDto } from './project.dto';
 import { MessagePattern } from '@nestjs/microservices';
@@ -14,6 +14,16 @@ export class ProjectsController {
   @Post('/')
   async createProject(@Body() data: ProjectDto) {
     return this.projectsServices.createProject(data);
+  }
+
+  @Delete(':projectId')
+  async deleteProject(@Param('projectId') projectId: string) {
+    return this.projectsServices.deleteProject(projectId);
+  }
+
+  @Get(':projectId')
+  async showProject(@Param('projectId') projectId: string) {
+    return this.projectsServices.showProject(projectId);
   }
 
   @Post('/access')
