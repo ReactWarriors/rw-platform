@@ -11,10 +11,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-  @Get('/login')
-  @Render('login')
-  renderLoginPage() {
-    return { title: 'login', message: 'Login page' };
-  }
 }

@@ -8,16 +8,10 @@ import { AuthGuard } from '../shared/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('api/users')
+  @Get('users')
   @UseGuards(new AuthGuard())
   getAll() {
     return this.usersService.findAll();
-  }
-
-  @Get('/register')
-  @Render('index')
-  registerPage() {
-    return { title: 'register', message: 'Register page' };
   }
 
   @Post('/register')

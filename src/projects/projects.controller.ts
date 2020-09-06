@@ -3,7 +3,7 @@ import { ProjectsService } from './projects.service';
 import { ProjectAccessDto, ProjectDto } from './project.dto';
 import { MessagePattern } from '@nestjs/microservices';
 
-@Controller('api/projects')
+@Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsServices: ProjectsService) {}
   @Get('/')
