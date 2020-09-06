@@ -35,7 +35,7 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [process.env.CLOUDAMQP_URL],
-        queue: 'project_acces',
+        queue: 'projects_access',
         queueOptions: {
           durable: false
         },
