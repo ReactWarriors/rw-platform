@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProjectApiKeyEntity } from './project_api_key.entity';
+import { ProjectAccessEntity } from '../project-access/project-access.entity';
 import { ProjectRO } from './project.dto';
 
 @Entity('projects')
@@ -25,11 +25,11 @@ export class ProjectEntity {
   name: string;
 
   @OneToMany(
-    () => ProjectApiKeyEntity,
+    () => ProjectAccessEntity,
     type => type.project,
   )
   @JoinTable()
-  apiKeys: ProjectApiKeyEntity[];
+  apiKeys: ProjectAccessEntity[];
 
   toResponseObject(): ProjectRO {
     return {

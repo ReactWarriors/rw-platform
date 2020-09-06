@@ -6,7 +6,7 @@ const localOrmConfig = {
   port: 3306,
   username: 'root',
   password: '',
-  database: 'rwplatform',
+  database: 'rw_platform',
   entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
 };

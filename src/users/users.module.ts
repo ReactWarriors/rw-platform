@@ -4,12 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UserEntity } from './user.entity';
-import { ProjectApiKeyEntity } from '../projects/project_api_key.entity';
+import { ProjectAccessEntity } from '../project-access/project-access.entity';
 import { ProjectEntity } from '../projects/project.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectApiKeyEntity]),
+    TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
   ],
   providers: [UsersService],
   controllers: [UsersController],

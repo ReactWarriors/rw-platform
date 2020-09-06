@@ -11,7 +11,7 @@ import {
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
-import { ProjectApiKeyEntity } from '../projects/project_api_key.entity';
+import { ProjectAccessEntity } from '../project-access/project-access.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -39,11 +39,11 @@ export class UserEntity {
   }
 
   @OneToMany(
-    () => ProjectApiKeyEntity,
+    () => ProjectAccessEntity,
     type => type.user,
   )
   @JoinTable()
-  projectsApiKeys: ProjectApiKeyEntity[];
+  projectsApiKeys: ProjectAccessEntity[];
 
   toResponseObject(showToken = true): UserRO {
     const { id, created, username, token, projectsApiKeys } = this;

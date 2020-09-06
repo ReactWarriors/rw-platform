@@ -7,14 +7,6 @@ export class ProjectDto {
   name: availableProjects;
 }
 
-export class ProjectAccessDto {
-  @IsNotEmpty()
-  projectId: string;
-
-  @IsNotEmpty()
-  userId: string;
-}
-
 export class ProjectRO {
   id: string;
   name: string;

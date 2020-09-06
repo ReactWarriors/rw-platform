@@ -9,10 +9,10 @@ import {
 } from 'typeorm';
 
 import { UserEntity } from '../users/user.entity';
-import { ProjectEntity } from './project.entity';
+import { ProjectEntity } from '../projects/project.entity';
 
-@Entity('projects_api_keys')
-export class ProjectApiKeyEntity {
+@Entity('project_access')
+export class ProjectAccessEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
