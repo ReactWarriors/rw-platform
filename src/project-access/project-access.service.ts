@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { availableProjects} from '../projects/project.dto';
+import { availableProjects } from '../projects/project.dto';
 import { nanoid } from 'nanoid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProjectAccessEntity } from './project-access.entity';
@@ -80,9 +80,23 @@ export class ProjectAccessService {
       where: { id: userId },
     });
 
+    if (!user) {
+      throw new HttpException(
+        `User id: ${userId}; doesn't exist`,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
+
+    if (!project) {
+      throw new HttpException(
+        `Project id: ${projectId}; doesn't exist`,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
 
     const projectApiKey = await this.projectAccessRepository.findOne({
       where: {

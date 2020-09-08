@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
-
-import 'dotenv/config';
+import * as helmet from 'helmet';
 import { join } from 'path';
+
 import { AppModule } from './app.module';
 
 
@@ -12,7 +13,9 @@ const logger = new Logger();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(helmet());
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.enableCors();
 
   const microservice = app.connectMicroservice(
     {
