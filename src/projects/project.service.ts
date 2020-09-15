@@ -18,7 +18,7 @@ const logger = new Logger('ProjectService');
 
 @Global()
 @Injectable()
-export class ProjectsService {
+export class ProjectService {
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly projectRepository: Repository<ProjectEntity>,

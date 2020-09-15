@@ -4,9 +4,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProjectsModule } from './projects/projects.module';
+import { ProjectModule } from './projects/project.module';
 import { ProjectAccessEntity } from './project-access/project-access.entity';
-import { ProjectsService } from './projects/projects.service';
+import { ProjectService } from './projects/project.service';
 import { ProjectEntity } from './projects/project.entity';
 import { UserEntity } from './user/user.entity';
 import { ProjectAccessModule } from './project-access/project-access.module';
@@ -17,11 +17,11 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
     UserModule,
-    ProjectsModule,
+    ProjectModule,
     ProjectAccessModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ProjectsService],
+  providers: [AppService, ProjectService],
 })
 export class AppModule {}

@@ -8,12 +8,12 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
+import { ProjectService } from './project.service';
 import { ProjectDto } from './project.dto';
 
 @Controller('projects')
-export class ProjectsController {
-  constructor(private readonly projectsServices: ProjectsService) {}
+export class ProjectController {
+  constructor(private readonly projectsServices: ProjectService) {}
   @Get('/')
   getAllProjects() {
     return this.projectsServices.getAllProjects();
