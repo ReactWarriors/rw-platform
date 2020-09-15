@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserEntity } from '../users/user.entity';
+import { UserEntity } from '../user/user.entity';
 import { ProjectEntity } from '../projects/project.entity';
 
 @Entity('project_access')

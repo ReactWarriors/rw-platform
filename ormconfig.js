@@ -8,7 +8,11 @@ const localOrmConfig = {
   password: '',
   database: 'rw_platform',
   entities: ['dist/**/*.entity{.ts,.js}'],
-  synchronize: true,
+  migrations: ['dist/migration/*.js'],
+  cli: {
+    migrationsDir: 'migration',
+  },
+  // synchronize: true,
 };
 
 const prodOrmConfig = {

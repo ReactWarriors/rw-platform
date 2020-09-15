@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProjectAccessEntity } from './project-access.entity';
 import { Repository } from 'typeorm';
-import { UserEntity } from '../users/user.entity';
+import { UserEntity } from '../user/user.entity';
 import { ProjectEntity } from '../projects/project.entity';
 import { ProjectAccessDto } from './project-access.dto';
 

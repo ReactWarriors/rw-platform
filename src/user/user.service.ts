@@ -6,7 +6,7 @@ import { UserEntity } from './user.entity';
 import { UserDto, UserRO } from './user.dto';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
@@ -16,7 +16,7 @@ export class UsersService {
     const users = await this.usersRepository.find({
       relations: ['projectsApiKeys'],
     });
-    return users.map(item => item.toResponseObject());
+    return users.map(item => item.toResponseObject(false));
   }
 
   async login(data: UserDto): Promise<UserRO> {

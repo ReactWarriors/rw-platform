@@ -13,7 +13,7 @@ import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
 import { ProjectAccessEntity } from '../project-access/project-access.entity';
 
-@Entity('users')
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
