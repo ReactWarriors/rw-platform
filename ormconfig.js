@@ -12,7 +12,7 @@ const localOrmConfig = {
   cli: {
     migrationsDir: 'migration',
   },
-  // synchronize: true,
+  synchronize: true,
 };
 
 const prodOrmConfig = {

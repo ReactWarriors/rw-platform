@@ -1,5 +1,11 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
+import {
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
+import { verifyToken } from './verifyToken';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,11 +23,6 @@ export class AuthGuard implements CanActivate {
       throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
     }
     const token = auth.split(' ')[1];
-    try {
-      return await jwt.verify(token, process.env.SECRET)
-    } catch (err) {
-      const message = 'Token error: ' + (err.message || err.name);
-      throw new HttpException(message, HttpStatus.FORBIDDEN)
-    }
+    await verifyToken(token);
   }
 }

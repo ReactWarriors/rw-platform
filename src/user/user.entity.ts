@@ -9,9 +9,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
-import { UserRO } from './user.dto';
 import { ProjectAccessEntity } from '../project-access/project-access.entity';
+import { UserRole } from './enums/role.type';
+import { UserStatus } from './enums/status.enum';
+import { UserRO } from './user.type';
 
 @Entity('user')
 export class UserEntity {
@@ -23,6 +24,26 @@ export class UserEntity {
 
   @UpdateDateColumn()
   updated: Date;
+
+  @Column({
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.pending,
+  })
+  status: UserStatus;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.student,
+  })
+  role: UserRole;
+
+  @Column({
+    length: 40,
+    unique: true,
+  })
+  email: string;
 
   @Column({
     length: 100,
@@ -45,8 +66,12 @@ export class UserEntity {
   @JoinTable()
   projectsApiKeys: ProjectAccessEntity[];
 
-  toResponseObject(showToken = true): UserRO {
-    const { id, created, username, token, projectsApiKeys } = this;
+  async comparePassword(attempt) {
+    return await bcrypt.compare(attempt, this.password);
+  }
+
+  toResponseObject(): UserRO {
+    const { id, created, username, projectsApiKeys } = this;
 
     const responseObject: UserRO = {
       id,
@@ -54,18 +79,7 @@ export class UserEntity {
       username,
       projectsApiKeys,
     };
-    if (showToken) {
-      responseObject.token = token;
-    }
+
     return responseObject;
-  }
-
-  async comparePassword(attempt) {
-    return await bcrypt.compare(attempt, this.password);
-  }
-
-  private get token() {
-    const { id, username } = this;
-    return jwt.sign({ id, username }, process.env.SECRET, { expiresIn: '7d' });
   }
 }

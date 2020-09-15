@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from './user.entity';
-import { UserDto, UserRO } from './user.dto';
+import { CreateUserDto, IUser, LoginUserDto, UserRO } from './user.type';
 
 @Injectable()
 export class UserService {
@@ -16,13 +16,14 @@ export class UserService {
     const users = await this.usersRepository.find({
       relations: ['projectsApiKeys'],
     });
-    return users.map(item => item.toResponseObject(false));
+
+    return users.map(item => item.toResponseObject());
   }
 
-  async login(data: UserDto): Promise<UserRO> {
-    const { username, password } = data;
+  async login(data: LoginUserDto): Promise<IUser> {
+    const { email, password } = data;
     const user = await this.usersRepository.findOne({
-      where: { username },
+      where: { email },
     });
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
@@ -30,10 +31,10 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return user.toResponseObject();
+    return user;
   }
 
-  async registerUser(data: UserDto): Promise<UserRO> {
+  async create(data: CreateUserDto): Promise<IUser> {
     const { username } = data;
     const isUserAlreadyExist = Boolean(await this.findUserByName(username));
     if (isUserAlreadyExist) {
@@ -41,7 +42,7 @@ export class UserService {
     }
     const user = await this.usersRepository.create(data);
     await this.usersRepository.save(user);
-    return user.toResponseObject();
+    return user;
   }
 
   private findUserByName(username: string) {
