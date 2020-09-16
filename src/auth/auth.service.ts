@@ -4,10 +4,14 @@ import { CreateUserDto, IUser, LoginUserDto, UserRO } from '../user/user.type';
 import { UserService } from '../user/user.service';
 import { decodeToken } from '../shared/verifyToken';
 import { UserStatus } from '../user/enums/status.enum';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailService: MailService,
+  ) {}
 
   async login(data: LoginUserDto): Promise<UserRO> {
     const user = await this.userService.login(data);
@@ -23,7 +27,9 @@ export class AuthService {
   async sendConfirmation(user: IUser) {
     const confirmationToken = await this.signUser(user);
     const confirmLink = `http://localhost:${process.env.PORT}/auth/confirm?token=${confirmationToken}`;
+    await this.mailService.send(confirmLink);
     return confirmLink;
+
     // await this.mailService.send({
     //   from: this.configService.get<string>('JS_CODE_MAIL'),
     //   to: user.email,

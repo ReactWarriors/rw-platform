@@ -71,12 +71,13 @@ export class UserEntity {
   }
 
   toResponseObject(): UserRO {
-    const { id, created, username, projectsApiKeys } = this;
+    const { id, created, username, projectsApiKeys, email } = this;
 
     const responseObject: UserRO = {
       id,
       created,
       username,
+      email,
       projectsApiKeys,
     };
 

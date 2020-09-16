@@ -7,11 +7,11 @@ import * as helmet from 'helmet';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
-import { initMailer } from './mail/mail.service';
+// import { initMailer } from './mail/mail.service';
 
 const logger = new Logger();
 
-export let mailTransport;
+// export let mailTransport;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,7 +30,7 @@ async function bootstrap() {
     },
   });
 
-  mailTransport = await initMailer();
+  // mailTransport = await initMailer();
   await microservice.listen(() => logger.log('Microservice is listening... '));
   await app.listen(process.env.PORT, () => {
     logger.log(`Platform is running on port ${process.env.PORT}`);

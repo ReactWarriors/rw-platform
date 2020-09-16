@@ -8,13 +8,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProjectEntity } from '../projects/project.entity';
 import { ProjectAccessEntity } from '../project-access/project-access.entity';
+import { MailService } from '../mail/mail.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     UserModule,
+    MailModule,
     TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
   ],
-  providers: [AuthService, UserService],
+  providers: [AuthService, UserService, MailService],
   controllers: [AuthController],
 })
 export class AuthModule {}
