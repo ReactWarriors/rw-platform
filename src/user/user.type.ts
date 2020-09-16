@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsEmail } from 'class-validator';
+import { UserRole } from './enums/role.type';
+import { UserStatus } from './enums/status.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -24,8 +26,8 @@ export interface IUser {
   id: string;
   email: string;
   username: string;
-  status: string;
-  role: string;
+  status: UserStatus;
+  role: UserRole;
   created: Date;
   projectsApiKeys: Array<any>;
 }
@@ -33,7 +35,8 @@ export interface IUser {
 export type UserRO = {
   id: string;
   username: string;
+  email: string,
   created: Date;
-  token?: string;
   projectsApiKeys?: Array<any>;
+  token?: string;
 };

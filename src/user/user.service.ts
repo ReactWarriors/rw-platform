@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 import { CreateUserDto, IUser, LoginUserDto, UserRO } from './user.type';
+import { UserStatus } from './enums/status.enum';
+import { UserRole } from './enums/role.type';
 
 @Injectable()
 export class UserService {
@@ -35,8 +37,8 @@ export class UserService {
   }
 
   async create(data: CreateUserDto): Promise<IUser> {
-    const { username } = data;
-    const isUserAlreadyExist = Boolean(await this.findUserByName(username));
+    const { email } = data;
+    const isUserAlreadyExist = Boolean(await this.findByEmail(email));
     if (isUserAlreadyExist) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
@@ -45,7 +47,24 @@ export class UserService {
     return user;
   }
 
-  private findUserByName(username: string) {
-    return this.usersRepository.findOne({ where: { username } });
+  async find(id: string): Promise<IUser> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  async findByEmail(email: string): Promise<IUser> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async update(updatedUser: IUser): Promise<IUser> {
+    await this.usersRepository.save(updatedUser);
+    return updatedUser;
+  }
+
+  async updateStatus(user: IUser, status: UserStatus) {
+    return this.update({ ...user, status });
+  }
+
+  async updateRole(user: IUser, role: UserRole) {
+    return this.update({ ...user, role });
   }
 }

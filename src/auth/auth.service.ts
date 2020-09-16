@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { CreateUserDto, IUser, LoginUserDto, UserRO } from '../user/user.type';
 import { UserService } from '../user/user.service';
-import { verifyToken } from '../shared/verifyToken';
+import { decodeToken } from '../shared/verifyToken';
+import { UserStatus } from '../user/enums/status.enum';
 
 @Injectable()
 export class AuthService {
@@ -21,11 +22,7 @@ export class AuthService {
 
   async sendConfirmation(user: IUser) {
     const confirmationToken = await this.signUser(user);
-    // todo: update confirmation link
     const confirmLink = `http://localhost:${process.env.PORT}/auth/confirm?token=${confirmationToken}`;
-
-    console.log("confirmation Link ->", confirmLink)
-
     return confirmLink;
     // await this.mailService.send({
     //   from: this.configService.get<string>('JS_CODE_MAIL'),
@@ -39,7 +36,33 @@ export class AuthService {
   }
 
   async confirm(token: string) {
-    return verifyToken(token)
+    const { payload } = await decodeToken(token);
+    const user: IUser = await this.userService.find(payload.id);
+
+    if (!user) {
+      throw new HttpException(`User doesn't exist`, HttpStatus.FORBIDDEN);
+    }
+
+    if (user && user.status === UserStatus.pending) {
+      await this.userService.updateStatus(user, UserStatus.active);
+      return {
+        message: 'Account was successfully confirmed',
+      };
+    }
+
+    if (user && user.status === UserStatus.blocked) {
+      throw new HttpException(
+        `User was blocked can't can't be confirmed`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (user && user.status === UserStatus.active) {
+      throw new HttpException(
+        `User was already confirmed`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
   async signUser(user: IUser): Promise<string> {
@@ -57,17 +80,16 @@ export class AuthService {
   }
 
   private async addTokenToUser(user: IUser): Promise<UserRO> {
-    const { id, created, username, projectsApiKeys } = user;
+    const { id, created, username, email, projectsApiKeys } = user;
     const token = await this.signUser(user);
 
-    const responseObject: UserRO = {
+    return {
       id,
       created,
       username,
+      email,
       projectsApiKeys,
       token,
     };
-
-    return responseObject;
   }
 }
