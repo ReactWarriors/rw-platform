@@ -10,6 +10,7 @@ import { ProjectEntity } from './projects/project.entity';
 import { UserEntity } from './user/user.entity';
 import { ProjectAccessModule } from './project-access/project-access.module';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     ProjectModule,
     ProjectAccessModule,
     TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
