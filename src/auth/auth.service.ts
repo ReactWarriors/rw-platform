@@ -5,6 +5,8 @@ import { UserService } from '../user/user.service';
 import { decodeToken } from '../shared/verifyToken';
 import { UserStatus } from '../user/enums/status.enum';
 import { MailService } from '../mail/mail.service';
+import { EmailSubject } from '../mail/enums/emailSubject.enum';
+import { ISendConfirmationRO } from './interfaces/sendConfirmationRO.interface';
 
 @Injectable()
 export class AuthService {
@@ -24,21 +26,29 @@ export class AuthService {
     return this.addTokenToUser(user);
   }
 
-  async sendConfirmation(user: IUser) {
+  async sendConfirmation(user: IUser): Promise<ISendConfirmationRO> {
     const confirmationToken = await this.signUser(user);
-    const confirmLink = `http://localhost:${process.env.PORT}/auth/confirm?token=${confirmationToken}`;
-    await this.mailService.send(confirmLink);
-    return confirmLink;
+    const confirmLink = `${process.env.HOST}/auth/confirm?token=${confirmationToken}`;
 
-    // await this.mailService.send({
-    //   from: this.configService.get<string>('JS_CODE_MAIL'),
-    //   to: user.email,
-    //   subject: 'Verify User',
-    //   html: `
-    //             <h3>Hello ${user.firstName}!</h3>
-    //             <p>Please use this <a href="${confirmLink}">link</a> to confirm your account.</p>
-    //         `,
-    // });
+    try {
+      await this.mailService.send({
+        from: 'mail@reactwarriors.com',
+        to: user.email,
+        subject: EmailSubject.accountConfirmation,
+        text: 'Welcome to RW platform ! Confirm account',
+        html: `<div><b>Welcome to RW platform !</b><br/><a href="${confirmLink}">Confirm account !</a></div>`,
+      });
+      return {
+        ok: true,
+        result: {
+          message: `Email was send to ${user.email}`,
+        },
+      };
+    } catch {
+      return {
+        ok: false,
+      };
+    }
   }
 
   async confirm(token: string) {

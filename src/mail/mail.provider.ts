@@ -1,14 +1,23 @@
 import * as nodemailer from 'nodemailer';
 
-
 export const mailProviders = [
   {
     provide: 'MAILER_CONNECTION',
     useFactory: async () => {
-      console.log('-->', nodemailer)
+      if (process.env.ENV_NODE === 'production' || process.env.DEBUG_MAILER) {
+        return nodemailer.createTransport({
+          host: process.env.SMPTP_SERVER,
+          port: process.env.SMTP_PASSWORD,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD,
+          },
+        });
+      }
+
       const testAccount = await nodemailer.createTestAccount();
 
-      // create reusable transporter object using the default SMTP transport
       return nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
