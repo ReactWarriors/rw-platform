@@ -10,7 +10,7 @@ import {
 import { ProjectAccessEntity } from '../project-access/project-access.entity';
 import { ProjectRO } from './project.dto';
 
-@Entity('projects')
+@Entity('project')
 export class ProjectEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
