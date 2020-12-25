@@ -1,4 +1,4 @@
-import 'dotenv/config';
+require('dotenv/config');
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Transport } from '@nestjs/microservices';
@@ -27,13 +27,10 @@ async function bootstrap() {
     },
   });
 
-  // mailTransport = await initMailer();
   await microservice.listen(() => logger.log('Microservice is listening... '));
   await app.listen(process.env.PORT, () => {
     logger.log(`Platform is running on port ${process.env.PORT}`);
   });
-
-  console.log(`process.env.NODE_ENV ->`, process.env.NODE_ENV)
 }
 
 bootstrap();

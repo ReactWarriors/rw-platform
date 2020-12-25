@@ -15,8 +15,6 @@ export class MailService {
       const info = await this.transport.sendMail(data);
       this.logger.log(`${data.subject} email was send to: ${data.to}`);
 
-      this.logger.log(`Message sent: ${info.messageId}`);
-
       if (process.env.NODE_ENV === 'development' && !process.env.DEBUG_MAILER) {
         this.logger.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
       }

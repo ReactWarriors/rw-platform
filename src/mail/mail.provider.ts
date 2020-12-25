@@ -4,7 +4,8 @@ export const mailProviders = [
   {
     provide: 'MAILER_CONNECTION',
     useFactory: async () => {
-      if (process.env.ENV_NODE === 'production' || process.env.DEBUG_MAILER) {
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_MAILER) {
+        console.log('for prod');
         return nodemailer.createTransport({
           host: process.env.SMPTP_SERVER,
           port: process.env.SMTP_PASSWORD,
@@ -16,8 +17,8 @@ export const mailProviders = [
         });
       }
 
+      // for local development
       const testAccount = await nodemailer.createTestAccount();
-
       return nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
