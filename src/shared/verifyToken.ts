@@ -20,9 +20,5 @@ export const decodeToken = (token): Promise<any> => {
 };
 
 export async function verifyToken(token: string): Promise<boolean> {
-  try {
-    return await Boolean(decodeToken(token));
-  } catch (err) {
-    throw err;
-  }
+  return Boolean(await decodeToken(token));
 }
