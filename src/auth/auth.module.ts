@@ -6,18 +6,20 @@ import { UserModule } from '../user/user.module';
 import { UserService } from '../user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
-import { ProjectEntity } from '../projects/project.entity';
-import { ProjectAccessEntity } from '../project-access/project-access.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
+import { PayedRegisterToken } from '../payment/payed_register_token.entity';
+import { PaymentService } from '../payment/payment.service';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports: [
     UserModule,
     MailModule,
-    TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
+    TypeOrmModule.forFeature([UserEntity, PayedRegisterToken]),
+    PaymentModule,
   ],
-  providers: [AuthService, UserService, MailService],
+  providers: [AuthService, UserService, MailService, PaymentService],
   controllers: [AuthController],
 })
 export class AuthModule {}

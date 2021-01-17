@@ -5,12 +5,10 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectModule } from './projects/project.module';
-import { ProjectAccessEntity } from './project-access/project-access.entity';
-import { ProjectEntity } from './projects/project.entity';
-import { UserEntity } from './user/user.entity';
 import { ProjectAccessModule } from './project-access/project-access.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -19,8 +17,8 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
     ProjectModule,
     ProjectAccessModule,
-    TypeOrmModule.forFeature([UserEntity, ProjectEntity, ProjectAccessEntity]),
     MailModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,18 +1,22 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { CreateUserDto, IUser, LoginUserDto, UserRO } from '../user/user.type';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
 import { UserService } from '../user/user.service';
-import { decodeToken } from '../shared/verifyToken';
-import { UserStatus } from '../user/enums/status.enum';
 import { MailService } from '../mail/mail.service';
+import { PaymentService } from '../payment/payment.service';
+
+import { ISendConfirmationRO } from './interfaces/send-сonfirmation.ro.interface';
+import { CreateUserDto, IUser, LoginUserDto, UserRO } from '../user/user.type';
+import { UserStatus } from '../user/enums/status.enum';
 import { EmailSubject } from '../mail/enums/emailSubject.enum';
-import { ISendConfirmationRO } from './interfaces/sendConfirmationRO.interface';
+import { decodeToken } from '../shared/verifyToken';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly mailService: MailService,
+    private readonly paymentService: PaymentService,
   ) {}
 
   async login(data: LoginUserDto): Promise<UserRO> {
@@ -20,8 +24,32 @@ export class AuthService {
     return this.addTokenToUser(user);
   }
 
-  async signUp(data: CreateUserDto): Promise<UserRO> {
+  async signUp(
+    data: CreateUserDto,
+    payedRegisterToken?: string,
+  ): Promise<UserRO> {
+    let payedRegisterTokenData;
+
+    if (payedRegisterToken) {
+      payedRegisterTokenData = await this.paymentService.findPayedRegisterTokenDataByToken(payedRegisterToken)
+
+      if (!payedRegisterTokenData) {
+        throw new HttpException(
+          'Invalid payed register token',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
     const user = await this.userService.create(data);
+
+    if (payedRegisterTokenData) {
+      await this.paymentService.addPayedRegisterProjectAccess(
+        user.id,
+        payedRegisterTokenData,
+      );
+    }
+
     await this.sendConfirmation(user);
     return this.addTokenToUser(user);
   }

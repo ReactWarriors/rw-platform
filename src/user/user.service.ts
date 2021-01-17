@@ -37,13 +37,15 @@ export class UserService {
   }
 
   async create(data: CreateUserDto): Promise<IUser> {
-    const { email } = data;
-    const isUserAlreadyExist =
-      Boolean(await this.findByEmail(email)) ||
-      Boolean(await this.findByUsername(email));
-    if (isUserAlreadyExist) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    const { email, username } = data;
+
+    if (await this.findByEmail(email)) {
+      throw new HttpException(`User with email ${email} already exists`, HttpStatus.BAD_REQUEST);
     }
+    if (await this.findByUsername(username)) {
+      throw new HttpException(`Username ${username} already taken`, HttpStatus.BAD_REQUEST);
+    }
+
     const user = await this.usersRepository.create(data);
     await this.usersRepository.save(user);
     return user;
@@ -54,7 +56,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<IUser> {
-    return this.usersRepository.findOne({ where: { email } });
+    return await this.usersRepository.findOne({ where: { email } });
   }
 
   async findByUsername(username: string): Promise<IUser> {

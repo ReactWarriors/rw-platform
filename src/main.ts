@@ -2,7 +2,7 @@ require('dotenv/config');
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Transport } from '@nestjs/microservices';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import * as helmet from 'helmet';
 import { join } from 'path';
 
@@ -15,6 +15,7 @@ async function bootstrap() {
   app.use(helmet());
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
 
   const microservice = app.connectMicroservice({
     transport: Transport.RMQ,
