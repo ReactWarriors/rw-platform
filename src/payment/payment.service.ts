@@ -40,10 +40,10 @@ export class PaymentService {
     console.log('user ->', user);
 
     if (user) {
-      // await this.projectAccessService.addProjectAccess({
-      //   userId: user.id,
-      //   projectId: data.projectId,
-      // });
+      await this.projectAccessService.addProjectAccess({
+        userId: user.id,
+        projectId: data.projectId,
+      });
       // todo: return FE user cabinet page
       return { ok: true, user };
     }
